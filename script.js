@@ -169,7 +169,7 @@ function getDaysFarmign(nameCharacter) {
 
 
 getCharactersOfDay()
-const dialog = getId('modal')
+const dialog = getId('characterModal')
 const modalIcon = $('.iconModal')
 const infoModal = $('.infoModal') 
 const close = $('.close')
@@ -182,8 +182,8 @@ close.addEventListener('click',()=>{
 function fillDialog(info) {
     modalIcon.src = localStorage.getItem(info.character) ;
     infoModal.innerHTML = `
-        <span style="color:cyan">${info.domain}<span> 
-        <span style="color:cyan">${info.days}<span> 
+        <div style="color:cyan;text-align:center;">${info.domain}</div> 
+        <div style="color:cyan;text-align:center;">${info.days}</div> 
     `
     dialog.showModal() 
     
