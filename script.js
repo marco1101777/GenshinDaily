@@ -71,31 +71,6 @@ const consol = getId("consol")
 
 
 
-const registroBtn = $('.registro') ; 
-
-// buttons 
-registroBtn.addEventListener('click' , () => { 
-    window.open('https://www.hoyolab.com/') ;
-})
-
-const codigosBtn = $('.btnCodigos')
-const code = getId('codesList')
-const codes = [
-    "GENSHINGIFT", 
-    "SBNBUK67M37Z",
-]
-codes.forEach(element => {
-    const option = document.createElement("option")
-    option.value = element ; 
-    option.innerText = element ; 
-    code.appendChild(option) 
-
-});
-codigosBtn.addEventListener('click' , () => {
-    window.open(`https://genshin.hoyoverse.com/es/gift?code=${code.value}`) ; 
-
-})
-
 const parseCharacter = (character) => {
     character = character.replace( /\s/,'-');
     return character.toLowerCase() 
@@ -165,6 +140,7 @@ function getCharactersOfDay(){
         const div = document.createElement('div') 
         div.classList.add("character")
         div.title = name ;
+        img.title = name ;
         img.classList.add("character-icon")
         div.appendChild(img)
         info.appendChild(div) ;
@@ -173,4 +149,52 @@ function getCharactersOfDay(){
     const today =getId('day').innerHTML = days[day]
 }
 
+function getDaysFarmign(nameCharacter) {
+    const farmingDays = [] 
+    let nameDomain = "" ;
+    Object.entries(materials).forEach(([key,value]) => {
+        if(value.characters.find((character) => nameCharacter == character)){
+            farmingDays.push(...value.days) ;
+            nameDomain = key ; 
+           console.log(key) 
+        }
+    });
+    return {
+        character:nameCharacter,
+        domain : nameDomain , 
+        days : farmingDays 
+    }
+}
+
+
+
+
 getCharactersOfDay()
+const dialog = getId('modal')
+const modalIcon = $('.iconModal')
+const infoModal = $('.infoModal') 
+const close = $('.close')
+close.addEventListener('click',()=>{
+    dialog.close() 
+    console.log("cerrado")
+})
+
+
+function fillDialog(info) {
+    modalIcon.src = localStorage.getItem(info.character) ;
+    infoModal.innerHTML = `
+        <span style="color:cyan">${info.domain}<span> 
+        <span style="color:cyan">${info.days}<span> 
+    `
+    dialog.showModal() 
+    
+}
+
+
+const characterBtn =$$('.character') 
+
+characterBtn.forEach((ch) => {
+        ch.addEventListener('click',(e)=>{
+            fillDialog(getDaysFarmign(e.target.title))
+        })
+})
