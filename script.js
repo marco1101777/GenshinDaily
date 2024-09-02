@@ -67,7 +67,6 @@ const $ = sel =>  document.querySelector(sel)
 
 const $$ = sel =>  document.querySelectorAll(sel)
 const getId = id =>document.getElementById(id) 
-const consol = getId("consol")
 
 
 
