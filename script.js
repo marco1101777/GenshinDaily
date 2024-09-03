@@ -62,7 +62,6 @@ const materials = {
     }
 }
 
-
 const $ = sel =>  document.querySelector(sel) 
 
 const $$ = sel =>  document.querySelectorAll(sel)
@@ -169,13 +168,12 @@ function getDaysFarmign(nameCharacter) {
 
 
 getCharactersOfDay()
-const dialog = getId('characterModal')
+const dialog = new Modal(getId('characterModal'))
 const modalIcon = $('.iconModal')
 const infoModal = $('.infoModal') 
 const close = $('.close')
 close.addEventListener('click',()=>{
     dialog.close() 
-    console.log("cerrado")
 })
 
 
@@ -185,7 +183,7 @@ function fillDialog(info) {
         <div style="color:cyan;text-align:center;">${info.domain}</div> 
         <div style="color:cyan;text-align:center;">${info.days}</div> 
     `
-    dialog.showModal() 
+    dialog.show() 
     
 }
 

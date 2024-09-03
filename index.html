@@ -7,7 +7,7 @@
         <link href="style.css" rel="stylesheet">
     </head>
     <body>
-        <dialog  id="characterModal">
+        <div  id="characterModal">
             <div class="all">
                 
                 <div class="up">
@@ -16,7 +16,15 @@
                 <div class="infoModal"></div>
                 <button class="close" type="button">close</button> 
             </div>
-        </dialog>
+        </div>
+        <nav class="opc">
+            <div class="titlePage">
+                Genshin Daily
+            </div>
+            <div class="codes">
+                <button type="button" class="btnCodes">codes</button>
+            </div>
+        </nav>
         <div class="materiasDaily">
             <div class="title">
                 Talents materials <span id="day"></span>
@@ -25,7 +33,7 @@
                   
             </div>
         </div>
-       
+        <script src="modal.js"></script> 
         <script type="module" src="script.js"></script>
     </body>
 </html>
