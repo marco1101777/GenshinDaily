@@ -1,6 +1,6 @@
 class Modal{
    
-    costructor(elementHtml){
+    constructor(elementHtml){
     this.style = `
         position:fixed; 
         width:100% ; 
