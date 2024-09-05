@@ -6,8 +6,9 @@ class Modal{
         width:100% ; 
         height : 100vh  ; 
         display:none ; 
-        justify-conten :center ; 
-        align-items : center ; 
+        justify-content :center ; 
+        align-items : center ;
+        background-color : rgba(0,0,0,0.5) ;
 
     ` 
         this.modalElement = elementHtml ;
@@ -19,7 +20,7 @@ class Modal{
         this.modalElement.style.display = "none" 
     }
     showModal(){
-        thismodalElement.style.display = "flex"
+        this.modalElement.style.display = "flex"
     }
     
 

@@ -180,10 +180,17 @@ close.addEventListener('click',()=>{
 function fillDialog(info) {
     modalIcon.src = localStorage.getItem(info.character) ;
     infoModal.innerHTML = `
-        <div style="color:cyan;text-align:center;">${info.domain}</div> 
-        <div style="color:cyan;text-align:center;">${info.days}</div> 
+        <div style="text-align:center;">
+            Domain<br/>
+            <span style="color:cyan; ">${info.domain}</span>
+        </div> 
+        <div style="text-align:center;">
+            Days</br>
+            <span style="color:cyan">${info.days}</span>
+
+        </div> 
     `
-    dialog.show() 
+    dialog.showModal() 
     
 }
 
