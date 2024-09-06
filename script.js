@@ -202,3 +202,28 @@ characterBtn.forEach((ch) => {
             fillDialog(getDaysFarmign(e.target.title))
         })
 })
+
+const activeCodes = [
+    "codigo prueba",
+    "codigo prueba",
+    "codigo prueba",
+    "codigo prueba"
+]
+const codesBtn = $('.codesBtn') 
+const codesModal = new Modal($('.codesModal'))  
+const codes = $('.codes') 
+
+activeCodes.forEach((element) => {
+    const codeDiv = document.createElement('div') 
+    codeDiv.innerText = element ; 
+    codeDiv.classList.add('codeList') 
+    codes.appendChild(codeDiv)
+})
+
+
+codesBtn.addEventListener('click' , () => {
+    codesModal.showModal() ;
+})
+
+
+
