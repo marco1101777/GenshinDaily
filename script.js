@@ -208,7 +208,7 @@ characterBtn.forEach((ch) => {
 const activeCodes = [
     "BLAZETONATLAN",
 ]
-const codesBtn = $('.codesBtn') 
+const codesBtn = $('.btnCodes') 
 const codesModal = new Modal($('.codesModal'))  
 const codes = $('.codes') 
 
