@@ -172,6 +172,7 @@ const dialog = new Modal(getId('characterModal'))
 const modalIcon = $('.iconModal')
 const infoModal = $('.infoModal') 
 const close = $('.close')
+const nameCharacterModal = $('.nameCharacter') ;
 close.addEventListener('click',()=>{
     dialog.close() 
 })
@@ -179,6 +180,7 @@ close.addEventListener('click',()=>{
 
 function fillDialog(info) {
     modalIcon.src = localStorage.getItem(info.character) ;
+    nameCharacterModal.innerText = info.character ;
     infoModal.innerHTML = `
         <div style="text-align:center;">
             Domain<br/>
@@ -204,19 +206,19 @@ characterBtn.forEach((ch) => {
 })
 
 const activeCodes = [
-    "codigo prueba",
-    "codigo prueba",
-    "codigo prueba",
-    "codigo prueba"
+    "BLAZETONATLAN",
 ]
 const codesBtn = $('.codesBtn') 
 const codesModal = new Modal($('.codesModal'))  
 const codes = $('.codes') 
 
 activeCodes.forEach((element) => {
-    const codeDiv = document.createElement('div') 
-    codeDiv.innerText = element ; 
+    const codeDiv = document.createElement('a')
+    codeDiv.href = `https://genshin.hoyoverse.com/en/gift?code=${element}` ; 
     codeDiv.classList.add('codeList') 
+    const  codeText = document.createElement('h2')  ; 
+    codeText.innerText =  element ; 
+    codeDiv.appendChild(codeText) 
     codes.appendChild(codeDiv)
 })
 
