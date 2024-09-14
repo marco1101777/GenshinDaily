@@ -61,171 +61,164 @@ const materials = {
         "days" : ["Wednesday","Saturday","Sunday"] 
     }
 }
+const $ = sel => document.querySelector(sel);
+const $$ = sel => document.querySelectorAll(sel);
+const getId = id => document.getElementById(id);
 
-const $ = sel =>  document.querySelector(sel) 
+const parseCharacter = (character) => character.trim().replace(/\s+/g, '-').toLowerCase();
 
-const $$ = sel =>  document.querySelectorAll(sel)
-const getId = id =>document.getElementById(id) 
+const getImgUrl = (character) => `https://genshin.jmp.blue/characters/${parseCharacter(character)}/icon`;
 
-
-
-const parseCharacter = (character) => {
-    character = character.replace( /\s/,'-');
-    return character.toLowerCase() 
-    
-}
-
-// load icons characters 
-// api genshin 
-//
-const getImg = (ch) => {
-    ch = parseCharacter(ch) ; 
-    return `https://genshin.jmp.blue/characters/${ch}/icon-side`
-}
-function toBase64(imageUrl, callback) {
-    const xhr = new XMLHttpRequest();
-    xhr.onload = function() {
-        const reader = new FileReader();
-        reader.onloadend = function() {
-            callback(reader.result);
-        };
-        reader.readAsDataURL(xhr.response);
-    };
-    xhr.open('GET', imageUrl);
-    xhr.responseType = 'blob';
-    xhr.send();
-}
-
-function saveImageToLocalStorage(url,nameCharacter) {
-    toBase64(url, function(base64Image) {
-        localStorage.setItem(nameCharacter, base64Image);
-    });
-}
-function displayImageFromLocalStorage(nameCharacter) {
-    const base64Image = localStorage.getItem(nameCharacter);
-    if (base64Image) {
-        const img = document.createElement('img');
-        img.src = base64Image;
-        return img 
-    }else{
-        toBase64(getImg(nameCharacter),function(base64Image) {
-            localStorage.setItem(nameCharacter, base64Image);
+async function toBase64(imageUrl) {
+    try {
+        const response = await fetch(imageUrl);
+        const blob = await response.blob();
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
         });
-         const img = document.createElement('img');
-        img.src = base64Image;
-        return img 
-
+    } catch (error) {
+        console.error(error);
     }
+}
+
+function saveImageToLocalStorage(url, characterName) {
+    toBase64(url).then(base64Image => {
+        localStorage.setItem(characterName, base64Image);
+    });
+}
+
+async function displayImageFromLocalStorage(characterName) {
+    let base64Image = localStorage.getItem(characterName);
+    const img = document.createElement('img');
+
+    if (!base64Image) {
+        base64Image = await toBase64(getImgUrl(characterName));
+        localStorage.setItem(characterName, base64Image);
+    }
+
+    img.src = base64Image;
+    img.alt = characterName;
+    img.classList.add("character-icon");
+    return img;
+}
+const days = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
+async function getVisionCharacter(nameCharacter) {
+    let  vision = ""
+    await fetch(`https://genshin.jmp.blue/characters/${nameCharacter}`)
+        .then(async (response) => {
+            const character = await response.json()
+            console.log(character.vision)
+            vision = (character.vision)
+        })
+        .catch(erro => console.log(erro))
+    return vision 
+}
+
+const vision = {
+    "Anemo" :"#7ee5b8", 
+    "Pyro" :"#a92c2e",
+    "Cryo" :"#9ddae6",
+    "Geo":"#eacf5d",
+    "Dendro":"#aadf28",
+    "Electro":"#a254bf",
+    "Hydro": "#27d7e9",
 }
 
 
 
-const days = ["Sunday","Monday" , "Tuesday" , "Wednesday","Thursday","Friday" ,"Saturday"] 
-//  get day and  show a character talents for day   
-function getCharactersOfDay(){
-    const  day = new Date().getDay() ;
-    const characters = [] ;
+async function getCharactersOfDay() {
+    const day = new Date().getDay();
+    const today = days[day -1];
+    const characters = [];
+
+    Object.entries(materials).forEach(([domain, data]) => {
+        if (data.days.includes(today)) {
+            characters.push(...data.characters);
+        }
+    });
+
+    const info = $('.info');
+    characters.forEach(async name => {
+        const img = await displayImageFromLocalStorage(name);
+        const div = document.createElement('div');
+        const visonColor = vision[await getVisionCharacter(parseCharacter(name))]
+        div.classList.add("character");
+        div.style = "--element:" + visonColor          
+        div.title = name;
+        div.appendChild(img);
+        info.appendChild(div);
+    });
+
+    getId('day').textContent = today;
+}
+
+function getDaysFarming(characterName) {
+    let farmingDays = [];
+    let domain = "";
+
     Object.entries(materials).forEach(([key, value]) => {
-        const ifValue = value.days.find((daysMaterial) => daysMaterial == days[day] );
-        if (ifValue){
-            const ch = value.characters ;
-            characters.push(...ch) ;
+        if (value.characters.includes(characterName)) {
+            farmingDays = [...value.days];
+            domain = key;
         }
     });
-    const info = $('.info') ;
-    characters.forEach(name => {
-        const img = displayImageFromLocalStorage(name)
-        const div = document.createElement('div') 
-        div.classList.add("character")
-        div.title = name ;
-        img.title = name ;
-        img.classList.add("character-icon")
-        div.appendChild(img)
-        info.appendChild(div) ;
 
-    });
-    const today =getId('day').innerHTML = days[day]
-}
-
-function getDaysFarmign(nameCharacter) {
-    const farmingDays = [] 
-    let nameDomain = "" ;
-    Object.entries(materials).forEach(([key,value]) => {
-        if(value.characters.find((character) => nameCharacter == character)){
-            farmingDays.push(...value.days) ;
-            nameDomain = key ; 
-           console.log(key) 
-        }
-    });
     return {
-        character:nameCharacter,
-        domain : nameDomain , 
-        days : farmingDays 
-    }
+        character: characterName,
+        domain:domain,
+        days: farmingDays
+    };
 }
-
-
-
-
-getCharactersOfDay()
-const dialog = new Modal(getId('characterModal'))
-const modalIcon = $('.iconModal')
-const infoModal = $('.infoModal') 
-const close = $('.close')
-const nameCharacterModal = $('.nameCharacter') ;
-close.addEventListener('click',()=>{
-    dialog.close() 
-})
-
 
 function fillDialog(info) {
-    modalIcon.src = localStorage.getItem(info.character) ;
-    nameCharacterModal.innerText = info.character ;
+    modalIcon.src = localStorage.getItem(info.character);
+    nameCharacterModal.textContent = info.character;
     infoModal.innerHTML = `
         <div style="text-align:center;">
             Domain<br/>
-            <span style="color:cyan; ">${info.domain}</span>
-        </div> 
+            <span style="color:cyan;">${info.domain}</span>
+        </div>
         <div style="text-align:center;">
-            Days</br>
-            <span style="color:cyan">${info.days}</span>
-
-        </div> 
-    `
-    dialog.showModal() 
-    
+            Days<br/>
+            <span style="color:cyan;">${info.days.join(", ")}</span>
+        </div>
+    `;
+    dialog.showModal();
 }
 
+getCharactersOfDay();
 
-const characterBtn =$$('.character') 
+const dialog = new Modal(getId('characterModal'));
+const modalIcon = $('.iconModal');
+const infoModal = $('.infoModal');
+const nameCharacterModal = $('.nameCharacter');
+const close = $('.close');
 
-characterBtn.forEach((ch) => {
-        ch.addEventListener('click',(e)=>{
-            fillDialog(getDaysFarmign(e.target.title))
-        })
-})
+close.addEventListener('click', () => dialog.close());
+setTimeout(() => {
+    $$('.character').forEach(ch => {
+        ch.addEventListener('click', e => fillDialog(getDaysFarming(e.target.title)));
+    
+    });
+}, 1000);
 
-const activeCodes = [
-    "BLAZETONATLAN",
-]
-const codesBtn = $('.btnCodes') 
-const codesModal = new Modal($('.codesModal'))  
-const codes = $('.codes') 
+const activeCodes = ["BLAZETONATLAN"];
+const codesBtn = $('.btnCodes');
+const codesModal = new Modal($('.codesModal'));
+const codes = $('.codes');
 
-activeCodes.forEach((element) => {
-    const codeDiv = document.createElement('a')
-    codeDiv.href = `https://genshin.hoyoverse.com/en/gift?code=${element}` ; 
-    codeDiv.classList.add('codeList') 
-    const  codeText = document.createElement('h2')  ; 
-    codeText.innerText =  element ; 
-    codeDiv.appendChild(codeText) 
-    codes.appendChild(codeDiv)
-})
+activeCodes.forEach(code => {
+    const codeDiv = document.createElement('a');
+    codeDiv.href = `https://genshin.hoyoverse.com/en/gift?code=${code}`;
+    codeDiv.classList.add('codeList');
+    
+    const codeText = document.createElement('h2');
+    codeText.textContent = code;
+    codeDiv.appendChild(codeText);
+    codes.appendChild(codeDiv);
+});
 
-
-codesBtn.addEventListener('click' , () => {
-    codesModal.showModal() ;
-})
-
-
-
+codesBtn.addEventListener('click', () => codesModal.showModal());

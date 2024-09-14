@@ -46,10 +46,10 @@ button ,a {
 .info{
     color:white; 
     display: grid ;
-    grid-template-columns: repeat(auto-fit,minmax(200px ,1fr )) ;
-    gap:10px ;
+    grid-template-columns: repeat(auto-fit,minmax(100px ,1fr )) ;
+    gap:20px ;
     margin:10px ;
-
+    
 }
 .title{
     text-align:center ;
@@ -64,11 +64,13 @@ button ,a {
     justify-content: center; 
     align-items:center ; 
     cursor:pointer ;
+    box-shadow :0 0 10px var(--element) ;
+    padding :10px;
+    border-radius :20px;
 }
 .character-icon{
     width: 100px;
     height: 100px;
-    object-fit: contain;
 }
 .all{
     margin :30px ;
