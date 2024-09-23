@@ -64,6 +64,8 @@ const materials = {
 const $ = sel => document.querySelector(sel);
 const $$ = sel => document.querySelectorAll(sel);
 const getId = id => document.getElementById(id);
+// dp
+const visionCharacter = {}
 
 const parseCharacter = (character) => character.trim().replace(/\s+/g, '-').toLowerCase();
 
@@ -126,6 +128,12 @@ const vision = {
     "Electro":"#a254bf",
     "Hydro": "#27d7e9",
 }
+const dialog = new Modal(getId('characterModal'));
+const modalIcon = $('.iconModal');
+const infoModal = $('.infoModal');
+const nameCharacterModal = $('.nameCharacter');
+const close = $('.close');
+
 
 
 
@@ -145,13 +153,16 @@ async function getCharactersOfDay() {
         const img = await displayImageFromLocalStorage(name);
         const div = document.createElement('div');
         const visonColor = vision[await getVisionCharacter(parseCharacter(name))]
+        visionCharacter[name] = visonColor ; 
         div.classList.add("character");
         div.style = "--element:" + visonColor          
         div.title = name;
+        img.title = name ; 
         div.appendChild(img);
+        div.addEventListener('click' , e => fillDialog(getDaysFarming(e.target.title)))
         info.appendChild(div);
     });
-
+    console.log(visionCharacter)
     getId('day').textContent = today;
 }
 
@@ -174,16 +185,18 @@ function getDaysFarming(characterName) {
 }
 
 function fillDialog(info) {
+    const all = $('.all')
+    all.style = `--element:${visionCharacter[info.character]}`
     modalIcon.src = localStorage.getItem(info.character);
     nameCharacterModal.textContent = info.character;
     infoModal.innerHTML = `
         <div style="text-align:center;">
             Domain<br/>
-            <span style="color:cyan;">${info.domain}</span>
+            <span style="color:black ;        text-shadow:0 0 2px white;">${info.domain}</span>
         </div>
         <div style="text-align:center;">
             Days<br/>
-            <span style="color:cyan;">${info.days.join(", ")}</span>
+            <span style="color:black        ; text-shadow:0 0 2px white;;">${info.days.join(", ")}</span>
         </div>
     `;
     dialog.showModal();
@@ -191,20 +204,8 @@ function fillDialog(info) {
 
 getCharactersOfDay();
 
-const dialog = new Modal(getId('characterModal'));
-const modalIcon = $('.iconModal');
-const infoModal = $('.infoModal');
-const nameCharacterModal = $('.nameCharacter');
-const close = $('.close');
-
 close.addEventListener('click', () => dialog.close());
-setTimeout(() => {
-    $$('.character').forEach(ch => {
-        ch.addEventListener('click', e => fillDialog(getDaysFarming(e.target.title)));
-    
-    });
-}, 1000);
-
+   
 const activeCodes = ["BLAZETONATLAN"];
 const codesBtn = $('.btnCodes');
 const codesModal = new Modal($('.codesModal'));
