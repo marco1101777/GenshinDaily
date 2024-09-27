@@ -206,7 +206,10 @@ getCharactersOfDay();
 
 close.addEventListener('click', () => dialog.close());
    
-const activeCodes = ["BLAZETONATLAN"];
+const activeCodes = [   "BLAZETONATLAN", 
+                        "PT5WP6D5GXJ9",
+                        "KALF66CLGXKM",
+                        "XSME6NV4GX2Z"];
 const codesBtn = $('.btnCodes');
 const codesModal = new Modal($('.codesModal'));
 const codes = $('.codes');
