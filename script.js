@@ -213,7 +213,7 @@ const activeCodes = [   "BLAZETONATLAN",
 const codesBtn = $('.btnCodes');
 const codesModal = new Modal($('.codesModal'));
 const codes = $('.codes');
-
+const closeCodes=$('.closeCodes').addEventListener('click' ,() => codesModal.close())
 activeCodes.forEach(code => {
     const codeDiv = document.createElement('a');
     codeDiv.href = `https://genshin.hoyoverse.com/en/gift?code=${code}`;
